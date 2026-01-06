@@ -37,11 +37,10 @@ if [ $(echo ${IOQ3DED_BIN} | wc -l) -gt 1 ]; then
 fi
 
 echo "Command line:"
-echo '${IOQ3DED_BIN} +seta rconPassword "${ADMIN_PASSWORD}" +g_motd "${SERVER_MOTD}" +exec common.cfg ${FASTDL_ARGS} ${SERVER_ARGS}"'
+echo '${IOQ3DED_BIN} +seta rconPassword "${ADMIN_PASSWORD}" +g_motd "${SERVER_MOTD}" ${FASTDL_ARGS} ${SERVER_ARGS}"'
 
 ${IOQ3DED_BIN} \
     +seta rconPassword "${ADMIN_PASSWORD}" \
     +g_motd "${SERVER_MOTD}" \
-    +exec common.cfg \
     ${FASTDL_ARGS} \
     ${SERVER_ARGS}
