@@ -5,9 +5,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const defaultServers = [
-  { name: 'FFA', host: 'quake.pklan.net', port: 27960 },
-  { name: 'CTF', host: 'quake.pklan.net', port: 27961 },
-  { name: 'Q3TA', host: 'quake.pklan.net', port: 27962 },
+  { name: 'FFA', host: 'quake1', port: 27960 },
+  { name: 'CTF', host: 'quake2', port: 27960 },
+  { name: 'Q3TA', host: 'quake3', port: 27960 },
 ];
 
 let servers;
@@ -62,7 +62,7 @@ function renderHtml(statuses) {
         <tr style="background:${zebra};">
           <td style="padding:12px 16px; border:1px solid #333;">
             <div style="font-weight:bold; letter-spacing:2px; color:#ffdd57;">${status.name}</div>
-            <div style="font-size:12px; color:#aaa;">${status.host}:${status.port}</div>
+            <div style="font-size:12px; color:#aaa;">${status.host.replace(/^quake[0-9]/, 'quake.pklan.net')}:${status.displayPort || status.port}</div>
           </td>
           <td style="padding:12px 16px; border:1px solid #333; color:#ddd;">
             ${detail}
