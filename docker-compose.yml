@@ -1,0 +1,65 @@
+services:
+  quake1:
+    build: .
+    image: ioq3-server
+    container_name: quake1
+    ports:
+      - "27960:27960/udp"
+    volumes:
+      - ./baseq3:/opt/quake3/baseq3
+      - ./configs:/opt/quake3/configs
+    environment:
+      - SERVER_ARGS=+exec server-ffa.cfg
+      - FASTDL_URL=http://localhost:8080
+  quake2:
+    build: .
+    image: ioq3-server
+    container_name: quake2
+    ports:
+      - "27961:27960/udp"
+    volumes:
+      - ./baseq3:/opt/quake3/baseq3
+      - ./configs:/opt/quake3/configs
+    environment:
+      - SERVER_ARGS=+exec server-ctf.cfg
+      - FASTDL_URL=http://localhost:8080
+  quake3:
+    build: .
+    image: ioq3-server
+    container_name: quake3
+    ports:
+      - "27962:27960/udp"
+    volumes:
+      - ./baseq3:/opt/quake3/baseq3
+      - ./configs:/opt/quake3/configs
+    environment:
+      - SERVER_ARGS=+exec server-mp.cfg
+      - FASTDL_URL=http://localhost:8080
+
+  fastdl:
+    image: nginx:1.27-alpine
+    container_name: fastdl
+    ports:
+      - "8080:80"
+    volumes:
+      - ./fastdl/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./fastdl/public:/usr/share/nginx/html:ro
+
+  landing:
+    build: ./landing
+    image: ioq3-landing
+    container_name: quake-landing
+    depends_on:
+      - quake1
+      - quake2
+      - quake3
+    ports:
+      - "8081:3000"
+    environment:
+      PORT: 3000
+      SERVERS_JSON: |
+        [
+          {"name": "FFA Arena", "host": "quake1", "port": 27960},
+          {"name": "CTF Grounds", "host": "quake2", "port": 27960},
+          {"name": "Missionpack Siege", "host": "quake3", "port": 27960}
+        ]

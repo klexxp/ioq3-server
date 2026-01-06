@@ -1,0 +1,5 @@
+# Ignore all Quake pak files (user will add them manually)
+*.pk3
+
+# Keep node_modules out of the repo
+landing/node_modules/
