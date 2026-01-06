@@ -1,12 +1,12 @@
-# ioq3-server: Easy ioquake3 Dedicated Server with Docker Compose
+# ioq3-server: Multi instance ioquake3 setup 
 
-![Quake 3 Arena](https://upload.wikimedia.org/wikipedia/en/0/0c/Quake3Title.png)
+![Quake 3 Arena](https://upload.wikimedia.org/wikipedia/de/7/78/Quake_III_Arena_Logo.svg)
 
 ## 🚀 Quick Start
 
 1. **Clone this repository:**
    ```sh
-   git clone https://github.com/yourname/ioq3-server.git
+   git clone https://github.com/klexxp/ioq3-server.git
    cd ioq3-server
    ```
 2. **Add your Quake 3 game data:**
@@ -91,10 +91,9 @@ services:
 - Files remain read-only inside the container, preventing accidental deletion.
 - Only copy non-standard maps into `fastdl/public/baseq3` or `fastdl/public/missionpack` so official assets like `pak0.pk3` are never exposed publicly.
 
-## 🖥️ Retro Landing Page
+## 🖥️ Status Page
 - `landing` is a Node/Express app (port 8081) that queries each server via UDP and renders a 90s-style table showing online/offline state, map, and player counts.
 - Configure displayed servers via the `SERVERS_JSON` environment variable in `docker-compose.yml` (defaults target the bundled `quake1-3` services).
-- The Go old-school aesthetic uses table layouts, tiled backgrounds, and scanlines—tweak `landing/server.js` to change styling or add more metadata.
 - Expose port 8081 publicly (or behind a reverse proxy) for visitors to see live status; `/status.json` provides machine-readable output for other tools.
 
 ## 🔒 Security

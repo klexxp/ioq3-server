@@ -21,8 +21,6 @@ RUN cmake -GNinja \
 RUN cmake --build .
 RUN cmake --install .
 
-# Copy the game files from the builder container to a new image to minimise size
-
 # --- Final runtime image ---
 FROM alpine:3.23.2 AS ioq3ded
 LABEL "Maintainer"="klexx <klexx@pklan.net>"
