@@ -1,6 +1,9 @@
 #!/bin/sh
 echo "Launching ioquake3 server version ${IOQUAKE3_COMMIT}..."
 
+echo "Copying default configs..."
+    cp /opt/quake3/default-configs/* /opt/quake3/baseq3/
+
 if [ "$(ls -A /opt/quake3/configs 2>/dev/null)" ]; then
     echo "Copying custom configs..."
     cp /opt/quake3/configs/* /opt/quake3/baseq3/

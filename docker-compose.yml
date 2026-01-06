@@ -7,7 +7,8 @@ services:
       - "27960:27960/udp"
     volumes:
       - ./baseq3:/opt/quake3/baseq3
-      - ./files/default-configs:/opt/quake3/configs:ro
+      - ./files/default-configs:/opt/quake3/default-configs:ro
+      - ./files/configs:/opt/quake3/configs:ro
     environment:
       - SERVER_ARGS=+exec server-ffa.cfg
       - FASTDL_URL=${FASTDL_URL}
@@ -20,7 +21,8 @@ services:
       - "27961:27960/udp"
     volumes:
       - ./baseq3:/opt/quake3/baseq3
-      - ./files/default-configs:/opt/quake3/configs:ro
+      - ./files/default-configs:/opt/quake3/default-configs:ro
+      - ./files/configs:/opt/quake3/configs:ro
     environment:
       - SERVER_ARGS=+exec server-ctf.cfg
       - FASTDL_URL=${FASTDL_URL}
@@ -34,7 +36,8 @@ services:
     volumes:
       - ./baseq3:/opt/quake3/baseq3
       - ./missionpack:/opt/quake3/missionpack
-      - ./files/default-configs:/opt/quake3/configs:ro
+      - ./files/default-configs:/opt/quake3/default-configs:ro
+      - ./files/configs:/opt/quake3/configs:ro
     environment:
       - SERVER_ARGS=+set fs_game missionpack +exec server-mp.cfg
       - FASTDL_URL=${FASTDL_URL}
