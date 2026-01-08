@@ -22,9 +22,11 @@ services:
       - "27961:27960/udp"
     volumes:
       - ./baseq3:/opt/quake3/baseq3
-      - ./files/default-configs:/opt/quake3/default-configs
+      - ./osp:/opt/quake3/osp
+      - ./files/default-configs:/opt/quake3/default-configs      
+      - ./files/configs/osp:/opt/quake3/configs
     environment:
-      - SERVER_ARGS=+exec server.cfg +exec ${CTF_CONFIG} +exec ${MAPS_CTF}
+      - SERVER_ARGS=+set fs_game osp +exec ctf.cfg
       - FASTDL_URL=${FASTDL_URL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - SERVER_MOTD=${SERVER_MOTD}
