@@ -1,8 +1,27 @@
 import express from 'express';
 import {GameDig} from 'gamedig';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Serve static assets (place your tile image at landing/public/tile.png)
+app.use(express.static('public'));
+
+// Discover tile images in public/tiles (optional)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+let tileFiles = [];
+try {
+  const tilesDir = path.join(__dirname, 'public', 'tiles');
+  tileFiles = fs.readdirSync(tilesDir)
+    .filter((f) => /\.(png|jpe?g|gif)$/i.test(f))
+    .map((f) => `/tiles/${f}`);
+} catch (e) {
+  tileFiles = [];
+}
 
 const defaultServers = [
   { name: 'FFA', host: 'quake1', port: 27960 },
@@ -85,7 +104,7 @@ function renderHtml(statuses) {
     margin: 0;
     font-family: 'Verdana', 'Geneva', sans-serif;
     background-color: #000;
-    background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"%3E%3Crect width="64" height="64" fill="%23000000"/%3E%3Cpath d="M0 32h64v1H0zm32-32h1v64h-1z" fill="%230b0b0b"/%3E%3C/svg%3E');
+
     color: #f9f9f9;
   }
   .scanlines {
@@ -103,6 +122,15 @@ function renderHtml(statuses) {
     background: rgba(10, 10, 10, 0.85);
     border: 4px double #ffae00;
     box-shadow: 0 0 40px rgba(0,0,0,0.8);
+  }
+  .logo {
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .logo img {
+    max-width: 220px;
+    height: auto;
+    display: inline-block;
   }
   h1 {
     font-size: 48px;
@@ -126,10 +154,12 @@ function renderHtml(statuses) {
 </style>
 </head>
 <body>
+<div id="bg-layers" aria-hidden="true"></div>
 <div class="scanlines"></div>
 <div class="wrapper">
+  <div class="logo"><img src="/logo.png" alt="QUAKE:PKLAN:NET logo"/></div>
   <h1>QUAKE:PKLAN:NET</h1>
-  <div class="subtitle">MULTI-SERVER CONTROL MATRIX</div>
+  <div class="subtitle">THE PORTAL OF PERMANENT DEATH</div>
   <table>
     <tbody>
       ${rows}
@@ -137,6 +167,73 @@ function renderHtml(statuses) {
   </table>
 </div>
 </body>
+<script>
+  (function(){
+    const tiles = ${JSON.stringify(tileFiles)};
+    if(!tiles || tiles.length === 0) return;
+
+    const container = document.getElementById('bg-layers');
+    container.style.position = 'fixed';
+    container.style.inset = '0';
+    container.style.zIndex = '-1';
+    container.style.pointerEvents = 'none';
+
+    const CELL = 64; // grid cell size in px (adjust for larger/smaller tiles)
+
+    function buildGrid() {
+      container.innerHTML = '';
+      const w = Math.max(window.innerWidth, 1);
+      const h = Math.max(window.innerHeight, 1);
+      const cols = Math.ceil(w / CELL);
+      const rows = Math.ceil(h / CELL);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const el = document.createElement('div');
+          el.className = 'bg-cell';
+          el.style.position = 'absolute';
+          el.style.left = (c * CELL) + 'px';
+          el.style.top = (r * CELL) + 'px';
+          el.style.width = CELL + 'px';
+          el.style.height = CELL + 'px';
+          const src = tiles[Math.floor(Math.random() * tiles.length)];
+          el.style.backgroundImage = 'url(' + src + ')';
+          el.style.backgroundRepeat = 'no-repeat';
+          el.style.backgroundSize = 'cover';
+          el.style.opacity = 0.98;
+          el.dataset.speed = (0.2 + Math.random() * 1.2).toString();
+          el.dataset.phase = (Math.random() * Math.PI * 2).toString();
+          container.appendChild(el);
+        }
+      }
+    }
+
+    let resizeTimeout = null;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(buildGrid, 150);
+    });
+
+    buildGrid();
+
+    let last = performance.now();
+    function tick(now) {
+      last = now;
+      const t = now / 1000;
+      document.querySelectorAll('.bg-cell').forEach((el) => {
+        const speed = parseFloat(el.dataset.speed) || 0.6;
+        const phase = parseFloat(el.dataset.phase) || 0;
+        const ampX = 6 * speed;
+        const ampY = 4 * speed;
+        const x = Math.sin(t * (0.6 + speed * 0.2) + phase) * ampX;
+        const y = Math.cos(t * (0.5 + speed * 0.15) + phase) * ampY;
+        el.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+      });
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  })();
+</script>
 </html>`;
 }
 
