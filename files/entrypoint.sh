@@ -40,6 +40,7 @@ echo "Command line:"
 echo ${IOQ3DED_BIN}  "+seta rconPassword " ${ADMIN_PASSWORD} " +g_motd " ${SERVER_MOTD} ${FASTDL_ARGS} ${SERVER_ARGS}
 
 ${IOQ3DED_BIN} \
+    +set dedicated 1 \
     ${SERVER_ARGS} \
     +seta rconPassword "${ADMIN_PASSWORD}" \    
     +g_motd "${SERVER_MOTD}" \
