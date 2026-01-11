@@ -27,8 +27,9 @@
     }
 }
 
-# FastDL subdomain (optional - enable by setting FASTDL_SUBDOMAIN)
-{$FASTDL_SUBDOMAIN} {
+# FastDL subdomain (optional - enable by setting FASTDL_SUBDOMAIN to your subdomain)
+# If not set, this block is safely ignored with the placeholder value
+{$FASTDL_SUBDOMAIN:_disabled.local} {
     # Reverse proxy to fastdl nginx
     reverse_proxy fastdl:80
     

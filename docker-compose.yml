@@ -23,7 +23,7 @@ services:
     volumes:
       - ./baseq3:/opt/quake3/baseq3
       - ./osp:/opt/quake3/osp
-      - ./files/default-configs:/opt/quake3/default-configs      
+      - ./files/default-configs:/opt/quake3/default-configs
       - ./files/configs/osp:/opt/quake3/configs
     environment:
       - SERVER_ARGS=+set fs_game osp +exec ctf.cfg
@@ -91,7 +91,7 @@ services:
       - caddy-config:/config
     environment:
       - DOMAIN=${DOMAIN:-localhost}
-      - FASTDL_SUBDOMAIN=${FASTDL_SUBDOMAIN:-}
+      - FASTDL_SUBDOMAIN=${FASTDL_SUBDOMAIN:-_disabled.local}
 
 volumes:
   caddy-data:
