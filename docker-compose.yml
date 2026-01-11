@@ -49,8 +49,8 @@ services:
   fastdl:
     image: nginx:1.27-alpine
     container_name: fastdl
-    ports:
-      - "8080:80"
+    expose:
+      - "80"
     volumes:
       - ./fastdl/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./fastdl/public:/usr/share/nginx/html:ro
@@ -80,6 +80,7 @@ services:
     restart: unless-stopped
     depends_on:
       - landing
+      - fastdl
     ports:
       - "80:80"
       - "443:443"
@@ -90,6 +91,7 @@ services:
       - caddy-config:/config
     environment:
       - DOMAIN=${DOMAIN:-localhost}
+      - FASTDL_SUBDOMAIN=${FASTDL_SUBDOMAIN:-}
 
 volumes:
   caddy-data:

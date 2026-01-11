@@ -1,15 +1,44 @@
-# Caddy configuration for ioq3-server landing page with Let's Encrypt SSL
-# Set the DOMAIN environment variable in docker-compose.yml or .env file
+# Caddy configuration for ioq3-server with Let's Encrypt SSL
+# Set the DOMAIN and FASTDL_SUBDOMAIN environment variables in docker-compose.yml or .env file
 
+# Main domain - Landing page
 {$DOMAIN:localhost} {
     # Automatic HTTPS with Let's Encrypt
     # Caddy will automatically obtain and renew certificates
     
-    # Reverse proxy to the landing page
-    reverse_proxy landing:3000
+    # FastDL on /fastdl path (if not using subdomain)
+    handle /fastdl/* {
+        uri strip_prefix /fastdl
+        reverse_proxy fastdl:80
+    }
+    
+    # Landing page (default)
+    handle {
+        reverse_proxy landing:3000
+    }
     
     # Enable gzip compression
     encode gzip
+    
+    # Logging
+    log {
+        output stdout
+        format console
+    }
+}
+
+# FastDL subdomain (optional - enable by setting FASTDL_SUBDOMAIN)
+{$FASTDL_SUBDOMAIN} {
+    # Reverse proxy to fastdl nginx
+    reverse_proxy fastdl:80
+    
+    # Enable gzip compression
+    encode gzip
+    
+    # Longer cache for static assets
+    header {
+        Cache-Control "public, max-age=86400"
+    }
     
     # Logging
     log {
