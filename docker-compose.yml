@@ -63,8 +63,8 @@ services:
       - quake1
       - quake2
       - quake3
-    ports:
-      - "80:3000"
+    expose:
+      - "3000"
     environment:
       PORT: 3000
       SERVERS_JSON: |
@@ -73,3 +73,24 @@ services:
           {"name": "OSP", "host": "quake2", "port": 27960, "displayPort": 27961},
           {"name": "Q3TA", "host": "quake3", "port": 27960, "displayPort": 27962}
         ]
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: quake-caddy
+    restart: unless-stopped
+    depends_on:
+      - landing
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # For HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+
+volumes:
+  caddy-data:
+  caddy-config:

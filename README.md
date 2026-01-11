@@ -92,9 +92,23 @@ services:
 - Only copy non-standard maps into `fastdl/public/baseq3` or `fastdl/public/missionpack` so official assets like `pak0.pk3` are never exposed publicly.
 
 ## 🖥️ Status Page
-- `landing` is a Node/Express app (port 8081) that queries each server via UDP and renders a 90s-style table showing online/offline state, map, and player counts.
+- `landing` is a Node/Express app that queries each server via UDP and renders a 90s-style table showing online/offline state, map, and player counts.
 - Configure displayed servers via the `SERVERS_JSON` environment variable in `docker-compose.yml` (defaults target the bundled `quake1-3` services).
-- Expose port 8081 publicly (or behind a reverse proxy) for visitors to see live status; `/status.json` provides machine-readable output for other tools.
+- Access via HTTPS at your domain (e.g., `https://quake.example.com`).
+
+### SSL/TLS with Let's Encrypt
+- The landing page is served through Caddy, which automatically obtains and renews Let's Encrypt SSL certificates.
+- **Requirements:**
+  - Set the `DOMAIN` environment variable to your fully qualified domain name (e.g., `quake.example.com`)
+  - Ensure ports 80 and 443 are accessible from the internet
+  - Your DNS must point to your server's public IP
+- **Example `.env` file:**
+  ```sh
+  DOMAIN=quake.example.com
+  FASTDL_URL=https://quake.example.com
+  ```
+- Caddy stores certificates in Docker volumes (`caddy-data` and `caddy-config`) for persistence across restarts.
+- For development/testing without a domain, Caddy will use a self-signed certificate when `DOMAIN=localhost`.
 
 ## 🔒 Security
 - Runs as non-root user (`ioq3ded`) inside the container.

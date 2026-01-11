@@ -1,0 +1,19 @@
+# Caddy configuration for ioq3-server landing page with Let's Encrypt SSL
+# Set the DOMAIN environment variable in docker-compose.yml or .env file
+
+{$DOMAIN:localhost} {
+    # Automatic HTTPS with Let's Encrypt
+    # Caddy will automatically obtain and renew certificates
+    
+    # Reverse proxy to the landing page
+    reverse_proxy landing:3000
+    
+    # Enable gzip compression
+    encode gzip
+    
+    # Logging
+    log {
+        output stdout
+        format console
+    }
+}
